@@ -1,52 +1,77 @@
 package com.github.glogloe.emailservice.repository.model.email;
 
-import com.github.glogloe.emailservice.repository.model.address.Address;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.Optional;
 import java.util.Set;
 
-@Entity
-@Table(name = "email")
+@Entity(name = "QEmail")
+@Table(name = "qemail")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Email {
+public class QEmail {
 
     @Id
     @SequenceGenerator(name = "email_id_sequence", sequenceName = "email_id_sequence", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "email_id_sequence")
     private Long id;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "email_id", referencedColumnName = "id")
-    private Set<Address> addresses;
+    @Email
+    @NotBlank
+    private String toEmail;
 
-    @Column(nullable = false)
+    @Email
+    @NotBlank
+    private String fromEmail;
+
+    @ElementCollection
+    private Set<@Email String> cc;
+
+    @NotBlank
     private String subject;
 
     @Enumerated(EnumType.ORDINAL)
-    @Column(nullable = false)
     private Importance importance;
 
-    @Column(nullable = false)
     @Size(min=1, max=2048)
     private String content;
 
-    public Email(Set<Address> addresses, String subject, Importance importance, String content) {
-        this.addresses = addresses;
+    public QEmail(String toEmail, String fromEmail, Set<String> cc, String subject, Importance importance, String content) {
+        this.toEmail = toEmail;
+        this.fromEmail = fromEmail;
+        this.cc = cc;
         this.subject = subject;
         this.importance = importance;
         this.content = content;
     }
 
-    public Set<Address> getAddresses() {
-        return addresses;
+    public String getToEmail() {
+        return toEmail;
     }
 
-    public void setAddresses(Set<Address> address) {
-        this.addresses = address;
+    public void setToEmail(String to) {
+        this.toEmail = to;
+    }
+
+    public String getFromEmail() {
+        return fromEmail;
+    }
+
+    public void setFromEmail(String from) {
+        this.fromEmail = from;
+    }
+
+    public Optional<Set<String>> getCc() {
+        return Optional.ofNullable(cc);
+    }
+
+    public void setCc(Set<String> cc) {
+        this.cc = cc;
     }
 
     public Long getId() {

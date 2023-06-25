@@ -19,12 +19,12 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        return buildErrorResponseEntity(new ApiError(status, LocalDateTime.now(), "Request error", ex.getLocalizedMessage()));
+        return buildErrorResponseEntity(new ApiError(status, LocalDateTime.now(), "Request error", ex.getMostSpecificCause().getLocalizedMessage()));
     }
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        return buildErrorResponseEntity(new ApiError(status, LocalDateTime.now(), "Request error", ex.getLocalizedMessage()));
+        return buildErrorResponseEntity(new ApiError(status, LocalDateTime.now(), "Request error", ex.getFieldError().getField() + " field " + ex.getFieldError().getDefaultMessage()));
     }
 
     private ResponseEntity<Object> buildErrorResponseEntity(ApiError apiError) {

@@ -9,8 +9,8 @@ import java.util.Optional;
 import java.util.Set;
 
 public record EmailDTO(
-        @Email String from,
         @Email String to,
+        @Email String from,
         Optional<Set<@Email String>> cc,
         @NotBlank String subject,
         @NonNull Importance importance,

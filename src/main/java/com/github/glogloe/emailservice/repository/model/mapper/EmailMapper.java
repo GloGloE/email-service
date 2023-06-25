@@ -1,77 +1,28 @@
 package com.github.glogloe.emailservice.repository.model.mapper;
 
 import com.github.glogloe.emailservice.api.model.EmailDTO;
-import com.github.glogloe.emailservice.repository.model.address.Address;
-import com.github.glogloe.emailservice.repository.model.address.CCAddress;
-import com.github.glogloe.emailservice.repository.model.address.FromAddress;
-import com.github.glogloe.emailservice.repository.model.address.ToAddress;
-import com.github.glogloe.emailservice.repository.model.email.Email;
-
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
+import com.github.glogloe.emailservice.repository.model.email.QEmail;
 
 public final class EmailMapper {
 
-    public static Email toEntity(EmailDTO emailDTO) {
-        var to = new ToAddress(emailDTO.to());
-        var from = new FromAddress(emailDTO.from());
+    public static QEmail toEntity(EmailDTO emailDTO) {
 
-        var ccSet = emailDTO.cc()
-                .stream()
-                .flatMap(Collection::stream)
-                .map(CCAddress::new)
-                .collect(Collectors.toSet());
-
-        var addressSet = new HashSet<>(Set.of(to, from));
-        addressSet.addAll(ccSet);
-
-        return new Email(
-                addressSet,
+        return new QEmail(
+                emailDTO.to(),
+                emailDTO.from(),
+                emailDTO.cc().orElse(null),
                 emailDTO.subject(),
                 emailDTO.importance(),
                 emailDTO.content());
     }
 
-    public static EmailDTO fromEntity(Email email) {
+    public static EmailDTO fromEntity(QEmail email) {
         return new EmailDTO(
-                getFrom(email.getAddresses()),
-                getTo(email.getAddresses()),
-                Optional.of(getCC(email.getAddresses())),
+                email.getToEmail(),
+                email.getFromEmail(),
+                email.getCc(),
                 email.getSubject(),
                 email.getImportance(),
                 email.getContent());
     }
-
-    private static String getFrom(Set<Address> a) {
-        for (var ad : a) {
-            if (ad instanceof FromAddress f) {
-                return f.getAddress();
-            }
-        }
-        return null;
-    }
-
-    private static String getTo(Set<Address> a) {
-        for (var ad : a) {
-            if (ad instanceof ToAddress f) {
-                return f.getAddress();
-            }
-        }
-        return null;
-    }
-
-    private static Set<String> getCC(Set<Address> a) {
-        var setic = new HashSet<String>();
-        for (var ad : a) {
-            if (ad instanceof CCAddress f) {
-                setic.add(f.getAddress());
-            }
-        }
-        return setic;
-    }
-
-
 }
