@@ -30,9 +30,9 @@ export function NewMail(): ReactElement {
         });
     }
 
+
     return (
         <div>
-            <MailForm onSubmit={handleSubmit}/>
             <Toast
                 show={showSuccess}
                 onClose={() => setShowSuccess(false)}
@@ -51,6 +51,7 @@ export function NewMail(): ReactElement {
                     Error sending email!
                 </ToastBody>
             </Toast>
+            <MailForm onSubmit={handleSubmit}/>
         </div>
     )
 }

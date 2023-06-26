@@ -16,7 +16,6 @@ const options : Option[] = [
 export function MailForm( {onSubmit}: MailFormProps ): ReactElement {
 
     const formRef = useRef<HTMLFormElement>(null);
-
     const toRef = useRef<HTMLInputElement>(null);
     const fromRef = useRef<HTMLInputElement>(null);
     const ccRef = useRef<HTMLInputElement>(null);
@@ -24,11 +23,11 @@ export function MailForm( {onSubmit}: MailFormProps ): ReactElement {
     const contentRef = useRef<HTMLTextAreaElement>(null);
 
     const [selected, setSelected] = useState<Option>(options[0]);
-
     const [showModal, setShowModal] = useState<boolean>(false);
 
-    function handleSubmit(e: FormEvent) {
-        e.preventDefault();
+    function handleSubmit(event: FormEvent) {
+        event.preventDefault();
+
         onSubmit({
             to: toRef.current!.value,
             from: fromRef.current!.value,
@@ -104,7 +103,6 @@ export function MailForm( {onSubmit}: MailFormProps ): ReactElement {
                                         <Form.Control
                                             required={false}
                                             ref={ccRef}
-                                            type='email'
                                         />
                                     </Form.Group>
                                     <Form.Group controlId="subject">
