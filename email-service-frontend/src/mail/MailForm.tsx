@@ -25,21 +25,29 @@ export function MailForm( {onSubmit}: MailFormProps ): ReactElement {
     const [selected, setSelected] = useState<Option>(options[0]);
     const [showModal, setShowModal] = useState<boolean>(false);
 
-    function handleSubmit(event: FormEvent) {
-        event.preventDefault();
+    const [validated, setValidated] = useState(false);
 
-        onSubmit({
-            to: toRef.current!.value,
-            from: fromRef.current!.value,
-            cc: ccRef.current ? ccRef.current.value.split(";")
-                                                   .map(function(cc) {
-                                                       return cc.trim()
-                                                   }) : [],
-            subject: subjectRef.current!.value,
-            importance: selected.value,
-            content: contentRef.current!.value
-        })
-        formRef.current!.reset();
+    function handleSubmit(event: FormEvent) {
+        setValidated(true);
+        if(!formRef.current!.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+        } else {
+            setValidated(false);
+            event.preventDefault();
+            onSubmit({
+                to: toRef.current!.value,
+                from: fromRef.current!.value,
+                cc: ccRef.current ? ccRef.current.value.split(/,|;/)
+                    .map(function(cc) {
+                        return cc.trim()
+                    }) : [],
+                subject: subjectRef.current!.value,
+                importance: selected.value,
+                content: contentRef.current!.value
+            })
+            formRef.current!.reset();
+        }
     }
 
     function handleCancel() {
@@ -78,6 +86,8 @@ export function MailForm( {onSubmit}: MailFormProps ): ReactElement {
                 <div className="card-body">
                     <Form
                         ref={formRef}
+                        noValidate
+                        validated={validated}
                         onSubmit={handleSubmit}>
                         <Stack gap={4}>
                             <Row>
@@ -89,6 +99,9 @@ export function MailForm( {onSubmit}: MailFormProps ): ReactElement {
                                             ref={toRef}
                                             type='email'
                                         />
+                                        <Form.Control.Feedback type="invalid">
+                                            Please enter a valid email
+                                        </Form.Control.Feedback>
                                     </Form.Group>
                                     <Form.Group controlId="from">
                                         <Form.Label>From</Form.Label>
@@ -97,13 +110,20 @@ export function MailForm( {onSubmit}: MailFormProps ): ReactElement {
                                             ref={fromRef}
                                             type='email'
                                         />
+                                        <Form.Control.Feedback type="invalid">
+                                            Please enter a valid email
+                                        </Form.Control.Feedback>
                                     </Form.Group>
                                     <Form.Group controlId="cc">
                                         <Form.Label>CC</Form.Label>
                                         <Form.Control
                                             required={false}
                                             ref={ccRef}
+                                            pattern="^(([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)(\s*(;|,)\s*|\s*$))*$"
                                         />
+                                        <Form.Control.Feedback type="invalid">
+                                            Please enter a valid email
+                                        </Form.Control.Feedback>
                                     </Form.Group>
                                     <Form.Group controlId="subject">
                                         <Form.Label>Subject</Form.Label>
@@ -111,6 +131,9 @@ export function MailForm( {onSubmit}: MailFormProps ): ReactElement {
                                             required
                                             ref={subjectRef}
                                         />
+                                        <Form.Control.Feedback type="invalid">
+                                            Please enter a subject
+                                        </Form.Control.Feedback>
                                     </Form.Group>
                                     <Form.Group controlId="importance">
                                         <Form.Label>Importance</Form.Label>
@@ -134,6 +157,9 @@ export function MailForm( {onSubmit}: MailFormProps ): ReactElement {
                                             rows={7}
                                             ref={contentRef}
                                         />
+                                        <Form.Control.Feedback type="invalid">
+                                            Please enter the email content
+                                        </Form.Control.Feedback>
                                     </Form.Group>
                                 </Col>
                             </Row>
