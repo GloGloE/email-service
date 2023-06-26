@@ -1,9 +1,13 @@
-import {ReactElement} from "react";
+import {ReactElement, useState} from "react";
 import {MailForm} from "./MailForm";
 import {baseURL, Email} from "../util/external";
 import "bootstrap/dist/css/bootstrap.min.css"
+import {Toast, ToastBody} from "react-bootstrap";
 
 export function NewMail(): ReactElement {
+
+    const [showSuccess, setShowSuccess] = useState<boolean>(false);
+    const [showFail, setShowFail] = useState<boolean>(false);
 
     const handleSubmit = async (data: Email) => {
         await fetch(baseURL, {
@@ -13,16 +17,37 @@ export function NewMail(): ReactElement {
                 'Content-type': 'application/json; charset=UTF-8',
             }
         })
-        .then((response) => response.json())
+        .then((response) => {
+            response.json();
+            setShowSuccess(true);
+        })
         .catch((err) => {
                 console.log(err.message);
+                setShowFail(true);
         });
     }
 
     return (
         <div className="w-50">
-            <h1>New Mail</h1>
             <MailForm onSubmit={handleSubmit}/>
+            <Toast
+                show={showSuccess}
+                onClose={() => setShowSuccess(false)}
+                bg="success"
+                autohide={true}>
+                <ToastBody className={'text-white'}>
+                    Email sent successfully!
+                </ToastBody>
+            </Toast>
+            <Toast
+                show={showFail}
+                onClose={() => setShowFail(false)}
+                bg="warning"
+                autohide={true}>
+                <ToastBody className={'text-white'}>
+                    Error sending email!
+                </ToastBody>
+            </Toast>
         </div>
     )
 }
