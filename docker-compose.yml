@@ -2,7 +2,7 @@ services:
   db:
     container_name: postgres
     image: postgres:14.1
-    restart: unless-stopped
+    restart: always
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=pass
