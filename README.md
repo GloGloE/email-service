@@ -3,7 +3,7 @@
 #### Node 18.16.0
 
 ## From email-service parent folder run:
-### `docker-compose -f docker-compose.yml -up`
+### `docker-compose -f docker-compose.yml up`
 ### `mvn clean install`
 ### `mvn spring-boot:run`
 
