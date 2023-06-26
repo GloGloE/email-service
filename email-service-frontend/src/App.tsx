@@ -1,7 +1,7 @@
 import React from 'react';
 import "bootstrap/dist/css/bootstrap.min.css"
 import {Link, Navigate, Route, Routes} from "react-router-dom";
-import {Button, Container, Nav, Tab} from "react-bootstrap";
+import {Button, Container, Nav, Stack, Tab} from "react-bootstrap";
 import {NewMail} from "./mail/NewMail";
 import {Emails} from "./mail/Emails";
 
@@ -10,8 +10,14 @@ function App() {
         <Container className="float-start">
             <Tab.Container>
             <Nav>
-                <Link to="/new">New Mail</Link>
-                <Link to="/emails">Emails</Link>
+                <Stack direction="horizontal" gap={2}>
+                    <Link to="/new">
+                        <Button variant="outline-secondary" >New Mail</Button>
+                    </Link>
+                    <Link to="/emails">
+                        <Button variant="outline-secondary" >Emails</Button>
+                    </Link>
+                </Stack>
             </Nav>
             </Tab.Container>
                 <Routes>

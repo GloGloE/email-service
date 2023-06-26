@@ -19,16 +19,19 @@ export function NewMail(): ReactElement {
         })
         .then((response) => {
             response.json();
-            setShowSuccess(true);
+            if(response.ok) {
+                setShowSuccess(true);
+            } else {
+                setShowFail(true);
+            }
         })
         .catch((err) => {
-                console.log(err.message);
-                setShowFail(true);
+            console.log(err.message);
         });
     }
 
     return (
-        <div className="w-50">
+        <div>
             <MailForm onSubmit={handleSubmit}/>
             <Toast
                 show={showSuccess}
