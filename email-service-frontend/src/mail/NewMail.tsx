@@ -19,8 +19,8 @@ export function NewMail(): ReactElement {
                 setShowSuccess(true);
             })
             .catch((err: Error) => {
-               setShowFail(true);
                errorMessage.current = 'Error sending email: ' + err.message;
+               setShowFail(true);
             });
     }
 
