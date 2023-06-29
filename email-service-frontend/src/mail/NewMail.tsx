@@ -1,35 +1,28 @@
-import {ReactElement, useState} from "react";
+import {ReactElement, useRef, useState} from "react";
 import {MailForm} from "./MailForm";
-import {baseURL, Email} from "../util/external";
+import {Email} from "../util/external";
 import "bootstrap/dist/css/bootstrap.min.css"
 import {Toast, ToastBody} from "react-bootstrap";
+import EmailService from "../services/EmailService";
 
 export function NewMail(): ReactElement {
 
     const [showSuccess, setShowSuccess] = useState<boolean>(false);
     const [showFail, setShowFail] = useState<boolean>(false);
+    const errorMessage = useRef<string>("");
 
-    const handleSubmit = async (data: Email) => {
-        await fetch(baseURL, {
-            method:'POST',
-            body: JSON.stringify(data),
-            headers: {
-                'Content-type': 'application/json; charset=UTF-8',
-            }
-        })
-        .then((response) => {
-            response.json();
-            if(response.ok) {
+
+    const handleSubmit = (data: Email) => {
+        errorMessage.current = "";
+        EmailService.save(data)
+            .then(() => {
                 setShowSuccess(true);
-            } else {
-                setShowFail(true);
-            }
-        })
-        .catch((err) => {
-            console.log(err.message);
-        });
+            })
+            .catch((err: Error) => {
+               setShowFail(true);
+               errorMessage.current = 'Error sending email: ' + err.message;
+            });
     }
-
 
     return (
         <div>
@@ -48,7 +41,7 @@ export function NewMail(): ReactElement {
                 bg="warning"
                 autohide={true}>
                 <ToastBody className={'text-white'}>
-                    Error sending email!
+                    {errorMessage.current}
                 </ToastBody>
             </Toast>
             <MailForm onSubmit={handleSubmit}/>

@@ -98,6 +98,7 @@ export function MailForm( {onSubmit}: MailFormProps ): ReactElement {
                                             required
                                             ref={toRef}
                                             type='email'
+                                            defaultValue="test@mail.com"
                                         />
                                         <Form.Control.Feedback type="invalid">
                                             Please enter a valid email
@@ -109,6 +110,7 @@ export function MailForm( {onSubmit}: MailFormProps ): ReactElement {
                                             required
                                             ref={fromRef}
                                             type='email'
+                                            defaultValue="test2@mail.com"
                                         />
                                         <Form.Control.Feedback type="invalid">
                                             Please enter a valid email
@@ -130,6 +132,7 @@ export function MailForm( {onSubmit}: MailFormProps ): ReactElement {
                                         <Form.Control
                                             required
                                             ref={subjectRef}
+                                            defaultValue="Subject 123"
                                         />
                                         <Form.Control.Feedback type="invalid">
                                             Please enter a subject
@@ -156,6 +159,7 @@ export function MailForm( {onSubmit}: MailFormProps ): ReactElement {
                                             as="textarea"
                                             rows={7}
                                             ref={contentRef}
+                                            defaultValue="Lorem ipsum 123...."
                                         />
                                         <Form.Control.Feedback type="invalid">
                                             Please enter the email content
