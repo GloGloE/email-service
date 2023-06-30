@@ -1,5 +1,5 @@
 import {ReactElement, useEffect, useRef, useState} from "react";
-import {baseURL, Columns, Email} from "../util/external";
+import {Columns, Email} from "../util/external";
 import EmailService from "../services/EmailService";
 import {Toast, ToastBody} from "react-bootstrap";
 
@@ -11,8 +11,19 @@ export function EmailsTable(): ReactElement {
     const errorMessage = useRef<string>("");
 
     useEffect(() => {
-        if(loading) return;
-        getAllEmail();
+        console.log("!!Emails useEffect!!")
+        if(loading) {
+            console.log("!!Aborting!!")
+            EmailService.abortAll();
+        }
+        else {
+            console.log("!!Not Aborting!!")
+            getAllEmail();
+        }
+        return () => {
+            console.log("!!Emails cleanup!!")
+            EmailService.abortAll();
+        }
     }, [])
 
     const getAllEmail = () => {
